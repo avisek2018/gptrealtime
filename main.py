@@ -71,12 +71,12 @@ async def incoming_call_handler(request: Request):
             == SystemEventNames.EventGridSubscriptionValidationEventName
         ):
             logger.info("Validating subscription")
-            validation_code = event.data["validationCode"]
-            validation_response = {"validationResponse": validation_code}
-            logger.info(validation_response)
-            return JSONResponse(
-                content=validation_response, status_code=status.HTTP_200_OK
-            )
+            # validation_code = event.data["validationCode"]
+            # validation_response = {"validationResponse": validation_code}
+            # logger.info(validation_response)
+            # return JSONResponse(
+            #     content=validation_response, status_code=status.HTTP_200_OK
+            # )
         elif event.event_type == "Microsoft.Communication.IncomingCall":
             if event.data["from"]["kind"] == "phoneNumber":
                 caller_id = event.data["from"]["phoneNumber"]["value"]
