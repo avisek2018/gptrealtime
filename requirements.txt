@@ -210,8 +210,6 @@ python-multipart==0.0.20
     # via
     #   acs-rt-gs-deploy (pyproject.toml)
     #   fastapi
-pywin32==308
-    # via portalocker
 pyyaml==6.0.2
     # via uvicorn
 rapidfuzz==3.12.1
