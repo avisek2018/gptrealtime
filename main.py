@@ -65,23 +65,30 @@ async def incoming_call_handler(request: Request):
     logger.info("incoming event data")
     for event_dict in await request.json():
         event = EventGridEvent.from_dict(event_dict)
-        # logger.info("incoming event data --> %s", event.data)
+        logger.info("incoming event data --> %s", event.data)
         if (
             event.event_type
             == SystemEventNames.EventGridSubscriptionValidationEventName
         ):
-            logger.info("Validating subscription")
+            #logger.info("Validating subscription")
             # validation_code = event.data["validationCode"]
             # validation_response = {"validationResponse": validation_code}
             # logger.info(validation_response)
             # return JSONResponse(
             #     content=validation_response, status_code=status.HTTP_200_OK
             # )
-        elif event.event_type == "Microsoft.Communication.IncomingCall":
-            if event.data["from"]["kind"] == "phoneNumber":
-                caller_id = event.data["from"]["phoneNumber"]["value"]
-            else:
-                caller_id = event.data["from"]["rawId"]
+        # elif event.event_type == "Microsoft.Communication.IncomingCall":
+        #     if event.data["from"]["kind"] == "phoneNumber":
+        #         caller_id = event.data["from"]["phoneNumber"]["value"]
+        #     else:
+        #         caller_id = event.data["from"]["rawId"]
+
+            if event.event_type == "Microsoft.Communication.IncomingCall":
+                logger.info("incoming event :", event.event_type)
+                if event.data["from"]["kind"] == "phoneNumber":
+                    caller_id = event.data["from"]["phoneNumber"]["value"]
+                else:
+                    caller_id = event.data["from"]["rawId"]
 
             incoming_call_context = event.data["incomingCallContext"]
             guid = uuid.uuid4()
@@ -91,6 +98,8 @@ async def incoming_call_handler(request: Request):
 
             parsed_url = urlparse(CALLBACK_EVENTS_URI)
             websocket_url = urlunparse(("wss", parsed_url.netloc, "/ws", "", "", ""))
+
+            logger.info("WEBSOCKET URL ->", websocket_url)
 
             logger.info(f"callback url: {callback_uri}")
             logger.info(f"websocket url: {websocket_url}")
