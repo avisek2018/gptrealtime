@@ -223,10 +223,12 @@ class CommunicationHandler:
                         print(f"Function args: {message.arguments}")
 
                         if function_name == "get_result":
+                            # Handle the function call to get results
+                            logger.info(f"Function Call Name: {function_name}")
                             try:
                                 query = args["query"]
                                 search_finder_response = SearchResults().google_search(query, num_results=5)
-
+                                logger.info(f"Search Results: {search_finder_response}")
                                 first_result_response = next(iter(search_finder_response), None)
                                 if not first_result_response:
                                     await self.rt_client.ws.send_json(
