@@ -229,7 +229,8 @@ class CommunicationHandler:
                                 query = args["query"]
                                 search_finder_response = SearchResults().google_search(query, num_results=5)
                                 logger.info(f"Search Results: {search_finder_response}")
-                                first_result_response = next(iter(search_finder_response), None)
+                                #first_result_response = next(iter(search_finder_response), None)
+                                first_result_response = search_finder_response[0]
                                 if not first_result_response:
                                     await self.rt_client.ws.send_json(
                                         {
