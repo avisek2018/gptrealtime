@@ -204,7 +204,7 @@ async def ws(websocket: WebSocket):
         try:
             # Receive data from the client
             data = await websocket.receive_json()
-            logger.info(f"Received data from client: {data}")
+            #logger.info(f"Received data from client: {data}")
             kind = data["kind"]
             if kind == "AudioData":
                 audio_data = data["audioData"]["data"]
