@@ -84,7 +84,7 @@ async def incoming_call_handler(request: Request):
                 caller_id = event.data["from"]["rawId"]
 
             if event.event_type == "Microsoft.Communication.IncomingCall":
-                logger.info("incoming event :", event.event_type)
+                logger.info("incoming event :", {event.event_type})
                 if event.data["from"]["kind"] == "phoneNumber":
                     caller_id = event.data["from"]["phoneNumber"]["value"]
                 else:
@@ -99,7 +99,7 @@ async def incoming_call_handler(request: Request):
             parsed_url = urlparse(CALLBACK_EVENTS_URI)
             websocket_url = urlunparse(("wss", parsed_url.netloc, "/ws", "", "", ""))
 
-            logger.info("WEBSOCKET URL ->", websocket_url)
+       
 
             logger.info(f"callback url: {callback_uri}")
             logger.info(f"websocket url: {websocket_url}")
@@ -117,6 +117,9 @@ async def incoming_call_handler(request: Request):
                     audio_format=AudioFormat.PCM24_K_MONO,
                 )
 
+                logger.info("Incoming Call Context: ", {incoming_call_context})
+                logger.info("Media Streaming Options: ", {media_streaming_options})
+
                 answer_call_result = acs_ca_client.answer_call(
                     incoming_call_context=incoming_call_context,
                     operation_context="incomingCall",
@@ -125,6 +128,7 @@ async def incoming_call_handler(request: Request):
                 )
 
             except Exception as e:
+                logger.info("An error occurred:", {e})
                 raise e
 
             logger.info(
@@ -190,8 +194,9 @@ async def handle_callback_with_context(contextId: str, request: Request):
 # WebSocket
 @app.websocket("/ws")
 async def ws(websocket: WebSocket):
+    logger.info("WebSocket connection trying to get established")
     await websocket.accept()
-
+    logger.info("WebSocket connection established")
     service = CommunicationHandler(websocket)
     await service.start_conversation_async()
     
@@ -199,6 +204,7 @@ async def ws(websocket: WebSocket):
         try:
             # Receive data from the client
             data = await websocket.receive_json()
+            logger.info(f"Received data from client: {data}")
             kind = data["kind"]
             if kind == "AudioData":
                 audio_data = data["audioData"]["data"]
