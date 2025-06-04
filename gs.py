@@ -30,3 +30,5 @@ class SearchResults:
             return search_results
         except Exception as e:
             raise Exception(f"Error during Google search: {str(e)}")
+
+
